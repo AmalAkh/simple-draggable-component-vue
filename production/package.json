@@ -1,0 +1,12 @@
+{
+  "name": "simple-draggable-component-vue",
+  "version": "1.0.0",
+  "type":"module",
+  "description": "Simple draggable component for VueJS 3.x",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Amal Akhmadinurov",
+  "license": "ISC"
+}
