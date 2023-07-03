@@ -4,8 +4,8 @@ import { resolve } from 'path'
 
 
 export default defineConfig({
-  plugins: [vue()],
-  build: {
+  plugins: [vue()]
+  /*build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, 'src/index.js'),
@@ -25,5 +25,5 @@ export default defineConfig({
         },
       },
     },
-  },
+  },*/
 })

@@ -207,7 +207,9 @@ export default
     {
         modelValue()
         {
+            
             this.activeItems = this.modelValue;
+            console.log(this.modelValue)
             
         }
     }
@@ -216,8 +218,8 @@ export default
 <template>
     <transition-group :tag="tag"  :name="name" >
       
-      <div  v-for="(item,index) in activeItems"  :key="item[itemKey]" :class="{'dragging':draggingItemKey==item[itemKey] }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
-          <slot name="item" :item="item">
+      <div   v-for="(item,index) in activeItems" draggable="true"  :key="item[itemKey]" :class="{'dragging':draggingItemKey==item[itemKey] }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
+          <slot name="item" :item="item" >
               
           </slot>
       </div>
