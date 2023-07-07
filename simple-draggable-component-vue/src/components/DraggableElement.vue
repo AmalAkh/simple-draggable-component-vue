@@ -112,7 +112,7 @@ export default
                 
             }else if(this.draggingItemIndex == -1 && window.draggableElementIsDragging)
             {
-                if(!this.isAdded && (this.group == window.draggableElementGroup || this.group == undefined) && (this.put || this.elId == window.draggingElementInitalElementId))
+                if(!this.isAdded && (this.group == window.draggableElementGroup || this.group == undefined) && (this.put || this.elId == window.draggingElementInitalElementId) && this.enabled)
                 {
                 
                     this.blocked = true;
@@ -236,12 +236,13 @@ export default
 </script>
 <template>
    
-    
+    <component :is="tag">
       <div  v-for="(item,index) in shadowActiveItems"  :key="activeItems[index][itemKey]" :class="{'dragging':draggingItemKey==activeItems[index][itemKey], 'sdcv-moving':item.isActive }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
           <slot name="item" :item="activeItems[index]">
               
           </slot>
       </div>
+    </component>
     
       
     
