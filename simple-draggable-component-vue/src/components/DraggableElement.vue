@@ -39,6 +39,12 @@ export default
         {
             type:String,
             required:true
+        },
+        enabled:
+        {
+            type:Boolean, 
+            
+            default:true
         }
         
     },
@@ -236,7 +242,7 @@ export default
 </script>
 <template>
    
-    <component :is="tag">
+    <component :is="tag" :class="{'disabled':!enabled}">
       <div  v-for="(item,index) in shadowActiveItems"  :key="activeItems[index][itemKey]" :class="{'dragging':draggingItemKey==activeItems[index][itemKey], 'sdcv-moving':item.isActive }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
           <slot name="item" :item="activeItems[index]">
               
@@ -249,9 +255,8 @@ export default
     
 </template>
 <style lang="scss" scoped>
-.empty-target-zone
-{
-    flex:auto;
-    background-color: gray;
-}
+.disabled:hover
+    {
+        cursor:not-allowed;
+    }
 </style>
