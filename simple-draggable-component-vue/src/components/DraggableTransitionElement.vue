@@ -246,7 +246,7 @@ export default
 <template>
     <transition-group :tag="tag"  :name="name" :class="{'disabled':!enabled}">
       
-      <div   v-for="(item,index) in shadowActiveItems" :draggable="enabled"  :key="activeItems[index][itemKey]" :class="{'dragging':draggingItemKey==activeItems[index][itemKey] }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
+      <div   v-for="(item,index) in shadowActiveItems" :draggable="enabled"  :key="activeItems[index][itemKey]" :class="{'sdcv-dragging':draggingItemKey==activeItems[index][itemKey], 'sdcv-moving':item.isActive }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
           <slot name="item" :item="activeItems[index]" >
               
           </slot>
