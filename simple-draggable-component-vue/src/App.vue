@@ -1,27 +1,10 @@
 <script setup>
-import DraggableTransitionElement from './components/DraggableTransitionElement.vue';
-import { reactive, onMounted,ref } from 'vue';
-
-const items = ref([]);
-onMounted(()=>
-{
-  items.value.push({text:"test 1"});
-  items.value.push({text:"test 2"});
-  
-
-})
+import BasicExample from './BasicExample.vue';
 
 </script>
 
 <template>
-  <DraggableTransitionElement tag="div" name="test" v-model="items" item-key="text">
-    <template  v-slot:item="item" draggable="true">
-      <div  class="test-item">
-        <p>{{ item.item.text }}</p>
-      </div>
-    </template>
-    
-  </DraggableTransitionElement>
+  <BasicExample/>
 </template>
 
 <style scoped>

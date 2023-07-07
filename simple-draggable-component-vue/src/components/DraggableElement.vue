@@ -1,5 +1,5 @@
 <script>
-import EventBus from "../utils/EventBus";
+import EventBus from "../utils/event_bus";
 export default  
 {
     
@@ -42,13 +42,13 @@ export default
         }
         
     },
-    data(){return{elId:"",dragEnded:true,blocked:false,draggable:false, dragover:false,draggingItemIndex:-1,draggingItemKey:"", activeItems:[], transitioning:false, isAdded:false}},
+    data(){return{elId:"",dragEnded:true,blocked:false,draggable:false, dragover:false,draggingItemIndex:-1,draggingItemKey:"", activeItems:[], shadowActiveItems:[], transitioning:false, isAdded:false}},
     methods:
     {
         
         dragStart(index)
         {
-            console.log("started");
+          
             this.dragEnded = false;
             this.draggingItemIndex=index
             this.draggingItemKey = this.activeItems[index][this.itemKey];
@@ -56,8 +56,11 @@ export default
             window.draggableElementDraggingObject = this.activeItems[index];
             window.draggableElementGroup = this.group;
             window.draggingElementInitalElementId = this.elId
+           
             this.$emit("movestart",this.activeItems[index],index);
-       
+            console.log("dragstared")
+            this.updateShadowItems();
+
             
         },
         dragEnd()
@@ -72,7 +75,9 @@ export default
             window.draggableElementIsDragging = false;
             window.draggingElementInitalElementId = "";
             this.isAdded = false;
-            console.log("dragend")
+            this.updateShadowItems();
+
+            
             //debugger;
             
             this.$emit("moveend");
@@ -81,7 +86,8 @@ export default
         changePosition(index)
         {
         
-            
+            console.log(this.draggingItemIndex);
+               
             if(index != this.draggingItemIndex && this.draggingItemIndex != -1 && (!this.transitioning && !this.blocked) )
             {
                 
@@ -89,10 +95,11 @@ export default
                 this.blocked = true;
                 let cont = this.activeItems[index];
                 let cont2 = this.activeItems[this.draggingItemIndex];
-              
+                
                 this.activeItems[index] = cont2;
                 this.activeItems[this.draggingItemIndex] = cont;
-
+                this.shadowActiveItems[index] = {isActive:true};
+                this.shadowActiveItems[this.draggingItemIndex] = {isActive:false}
                 
                 this.$emit("moved",this.draggingItemIndex, index, this.activeItems[this.draggingItemIndex])
                 this.draggingItemIndex = index;
@@ -102,11 +109,9 @@ export default
                     this.blocked = false;
                 },50)
                 this.$emit("update:modelValue", this.activeItems);
-                console.log("moveee");
-               
+                
             }else if(this.draggingItemIndex == -1 && window.draggableElementIsDragging)
             {
-                
                 if(!this.isAdded && (this.group == window.draggableElementGroup || this.group == undefined) && (this.put || this.elId == window.draggingElementInitalElementId))
                 {
                 
@@ -115,6 +120,7 @@ export default
                     this.draggingItemIndex = index;
                     this.dragEnded = false;
                     let newItems = [];
+                    let newShadowItems = [];
                    
                     for(let i = 0; i < this.activeItems.length+1;i++)
                     {
@@ -123,7 +129,7 @@ export default
                         {
                             
                             newItems.push(this.clone(window.draggableElementDraggingObject));
-                         
+                            newShadowItems.push({isActive:true});
                             
 
                         }else if(i > index)
@@ -131,6 +137,7 @@ export default
                             
 
                             newItems.push(this.activeItems[i-1]);
+                            newShadowItems.push({isActive:false});
 
                         }
                         else
@@ -138,6 +145,7 @@ export default
                             
 
                             newItems.push(this.activeItems[i]);
+                            newShadowItems.push({isActive:false});
                             
                         }
                     }
@@ -147,7 +155,7 @@ export default
                  
 
                     this.draggingItemKey = newItems[index][this.itemKey];
-                    
+                    console.log("drag key changed");
                     this.activeItems = newItems;
                     this.$emit("update:modelValue", this.activeItems);
                     EventBus.emit("cloned", this.elId);
@@ -158,7 +166,7 @@ export default
                     setTimeout(()=>
                     {
                         this.blocked = false;
-                        console.log("changed")
+                    
                     },90)
                     
                     
@@ -170,7 +178,7 @@ export default
         },
         drop()
         {
-            
+            this.updateShadowItems();
             this.draggingItemIndex = -1;
             this.draggingItemKey = "";
             this.isAdded = false;
@@ -179,21 +187,31 @@ export default
 
           
         },
-        test()
+        updateShadowItems()
         {
-
+            this.shadowActiveItems = [];
+            for(let i in this.activeItems)
+            {
+                this.shadowActiveItems.push({isActive:false});
+            }
         }
-        
     },
+
     mounted()
     {
         this.activeItems = this.modelValue;
+        
+        this.updateShadowItems();
         this.elId = String(Math.ceil(Math.random()*10000000));
         EventBus.on("cloned", (elId)=>
         {
+            
+            //this.$emit("update:modelValue", this.activeItems);
+           
             if(elId != this.elId)
             {
-               
+                this.updateShadowItems();
+                
                 this.draggingItemIndex = -1;
                 this.draggingItemKey = "";
                 this.isAdded = false;
@@ -202,26 +220,29 @@ export default
             }
            
         })
+
     },
     watch:
     {
         modelValue()
         {
             this.activeItems = this.modelValue;
-            
-            
+            this.updateShadowItems();
+
+
         }
     }
 }
 </script>
 <template>
    
-      
-      <div  v-for="(item,index) in activeItems"  :key="item[itemKey]" :class="{'dragging':draggingItemKey==item[itemKey] }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
-          <slot name="item" :item="item">
+    
+      <div  v-for="(item,index) in shadowActiveItems"  :key="activeItems[index][itemKey]" :class="{'dragging':draggingItemKey==activeItems[index][itemKey], 'sdcv-moving':item.isActive }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
+          <slot name="item" :item="activeItems[index]">
               
           </slot>
       </div>
+    
       
     
     
