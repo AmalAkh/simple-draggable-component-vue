@@ -65,14 +65,14 @@ function cloneToGroup2(item)
         </div>
         <div class="column">
 
-            <DraggableTransitionElement tag="div" name="list" :clone="cloneToGroup2" item-key="id" v-model="group2.items">
+            <DraggableElement :enabled=false tag="section" name="list" :clone="cloneToGroup2" item-key="id" v-model="group2.items">
                 <template #item="{item}">
                     <div class="drag-item">
                         <p>{{ item.name }}</p>
                     </div>
                 </template> 
                 
-            </DraggableTransitionElement >
+            </DraggableElement >
         </div>
     </div>
 </template>
