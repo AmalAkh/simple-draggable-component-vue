@@ -39,6 +39,12 @@ export default
         {
             type:String,
             required:true
+        },
+        enabled:
+        {
+            type:Boolean, 
+            
+            default:true
         }
         
     },
@@ -86,7 +92,7 @@ export default
         {
         
             
-            if(index != this.draggingItemIndex && this.draggingItemIndex != -1 && (!this.transitioning && !this.blocked) )
+            if(index != this.draggingItemIndex && this.draggingItemIndex != -1 && (!this.transitioning && !this.blocked) && this.enabled )
             {
                 
                 this.updateShadowItems();
@@ -114,7 +120,7 @@ export default
             }else if(this.draggingItemIndex == -1 && window.draggableElementIsDragging)
             {
                 
-                if(!this.isAdded && (this.group == window.draggableElementGroup || this.group == undefined) && (this.put || this.elId == window.draggingElementInitalElementId))
+                if(!this.isAdded && (this.group == window.draggableElementGroup || this.group == undefined) && (this.put || this.elId == window.draggingElementInitalElementId) && this.enabled)
                 {
                 
                     this.blocked = true;
@@ -238,9 +244,9 @@ export default
 }
 </script>
 <template>
-    <transition-group :tag="tag"  :name="name" >
+    <transition-group :tag="tag"  :name="name" :class="{'disabled':!enabled}">
       
-      <div   v-for="(item,index) in shadowActiveItems" draggable="true"  :key="activeItems[index][itemKey]" :class="{'dragging':draggingItemKey==activeItems[index][itemKey] }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
+      <div   v-for="(item,index) in shadowActiveItems" :draggable="enabled"  :key="activeItems[index][itemKey]" :class="{'dragging':draggingItemKey==activeItems[index][itemKey] }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
           <slot name="item" :item="activeItems[index]" >
               
           </slot>
@@ -250,9 +256,8 @@ export default
     
 </template>
 <style lang="scss" scoped>
-.empty-target-zone
-{
-    flex:auto;
-    background-color: gray;
-}
+    .disabled:hover
+    {
+        cursor:not-allowed;
+    }
 </style>
