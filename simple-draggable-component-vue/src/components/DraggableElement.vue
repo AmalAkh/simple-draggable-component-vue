@@ -3,7 +3,7 @@ import EventBus from "../utils/event_bus";
 export default  
 {
     
-    
+   
     props:
     {
         modelValue:{},
@@ -48,7 +48,7 @@ export default
         }
         
     },
-    data(){return{elId:"",dragEnded:true,blocked:false,draggable:false, dragover:false,draggingItemIndex:-1,draggingItemKey:"", activeItems:[], shadowActiveItems:[], transitioning:false, isAdded:false}},
+    data(){return{elId:"", isInnerMutation:false,dragEnded:true,blocked:false,draggable:false, dragover:false,draggingItemIndex:-1,draggingItemKey:"", activeItems:[], shadowActiveItems:[], transitioning:false, isAdded:false}},
     methods:
     {
         
@@ -62,9 +62,11 @@ export default
             window.draggableElementDraggingObject = this.activeItems[index];
             window.draggableElementGroup = this.group;
             window.draggingElementInitalElementId = this.elId
-           
+            
+         
+            
             this.$emit("movestart",this.activeItems[index],index);
-            console.log("dragstared")
+           
             this.updateShadowItems();
 
             
@@ -82,9 +84,7 @@ export default
             window.draggingElementInitalElementId = "";
             this.isAdded = false;
             this.updateShadowItems();
-
             
-            //debugger;
             
             this.$emit("moveend");
             
@@ -92,7 +92,7 @@ export default
         changePosition(index)
         {
         
-            console.log(this.draggingItemIndex);
+            
                
             if(index != this.draggingItemIndex && this.draggingItemIndex != -1 && (!this.transitioning && !this.blocked) )
             {
@@ -114,6 +114,8 @@ export default
                 {
                     this.blocked = false;
                 },50)
+                this.isInnerMutation = true;
+
                 this.$emit("update:modelValue", this.activeItems);
                 
             }else if(this.draggingItemIndex == -1 && window.draggableElementIsDragging)
@@ -161,10 +163,14 @@ export default
                  
 
                     this.draggingItemKey = newItems[index][this.itemKey];
-                    console.log("drag key changed");
+                    
                     this.activeItems = newItems;
+                    this.isInnerMutation = true;
+
                     this.$emit("update:modelValue", this.activeItems);
                     EventBus.emit("cloned", this.elId);
+                    this.shadowActiveItems = newShadowItems;
+                    this.shadowActiveItems[index].isActive = true;
                     
                     this.isAdded = true;
                     this.dragEnded = false;
@@ -195,10 +201,15 @@ export default
         },
         updateShadowItems()
         {
+        //     console.log("shadow items updated");
             this.shadowActiveItems = [];
-            for(let i in this.activeItems)
+            
+            for(let i in this.modelValue)
             {
+                
                 this.shadowActiveItems.push({isActive:false});
+
+                
             }
         }
     },
@@ -230,12 +241,27 @@ export default
     },
     watch:
     {
-        modelValue()
+
+        modelValue:
         {
-            this.activeItems = this.modelValue;
-            this.updateShadowItems();
+           handler()
+           {
+                this.activeItems = this.modelValue;
+                if(!this.isInnerMutation)
+                {
+                    
+                    this.updateShadowItems();
+                  
+                }
+                else
+                {
+                    
+                    this.isInnerMutation = false;
 
-
+                }
+                
+           },
+           deep:true
         }
     }
 }

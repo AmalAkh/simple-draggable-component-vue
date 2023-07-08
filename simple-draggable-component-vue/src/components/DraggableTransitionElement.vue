@@ -80,11 +80,12 @@ export default
             window.draggableElementIsDragging = false;
             window.draggingElementInitalElementId = "";
             this.isAdded = false;
-            console.log("dragend")
-            //debugger;
+            this.isInnerMutation = false;
+            
             
             this.$emit("moveend");
             this.updateShadowItems();
+            console.log("dagend");
 
             
         },
@@ -95,7 +96,7 @@ export default
             if(index != this.draggingItemIndex && this.draggingItemIndex != -1 && (!this.transitioning && !this.blocked) && this.enabled )
             {
                 
-                this.updateShadowItems();
+                //this.updateShadowItems();
                 
                 this.blocked = true;
                 let cont = this.activeItems[index];
@@ -114,8 +115,10 @@ export default
                 {
                     this.blocked = false;
                 },50)
+                this.isInnerMutation = true;
+
                 this.$emit("update:modelValue", this.activeItems);
-                console.log("moveee");
+                
                
             }else if(this.draggingItemIndex == -1 && window.draggableElementIsDragging)
             {
@@ -167,9 +170,13 @@ export default
                     this.draggingItemKey = newItems[index][this.itemKey];
                     
                     this.activeItems = newItems;
-                    this.activeShadowItems = newShadowItems;
+                    this.isInnerMutation = true;
+
+        
                     this.$emit("update:modelValue", this.activeItems);
                     EventBus.emit("cloned", this.elId);
+                    this.shadowActiveItems = newShadowItems;
+                    this.shadowActiveItems[index].isActive = true;
                     
                     this.isAdded = true;
                     this.dragEnded = false;
@@ -189,6 +196,7 @@ export default
         },
         drop()
         {
+            this.updateShadowItems();
             
             this.draggingItemIndex = -1;
             this.draggingItemKey = "";
@@ -200,6 +208,8 @@ export default
         },
         updateShadowItems()
         {
+            
+
             this.shadowActiveItems = [];
             for(let i in this.activeItems)
             {
@@ -219,12 +229,12 @@ export default
             if(elId != this.elId)
             {
         
-               
+                this.updateShadowItems();
                 this.draggingItemIndex = -1;
                 this.draggingItemKey = "";
                 this.isAdded = false;
                 this.blocked = false;
-                this.updateShadowItems();
+                
        
             }
            
@@ -232,13 +242,27 @@ export default
     },
     watch:
     {
-        modelValue()
+        modelValue:
         {
-            
-            this.activeItems = this.modelValue;
-            this.updateShadowItems();
-            
-            
+           handler()
+           {
+                this.activeItems = this.modelValue;
+                console.log(`hanlder`)
+                if(!this.isInnerMutation)
+                {
+                    
+                    this.updateShadowItems();
+                  
+                }
+                else
+                {
+                    
+                    this.isInnerMutation = false;
+
+                }
+                
+           },
+           deep:true
         }
     }
 }
