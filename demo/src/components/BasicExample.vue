@@ -29,7 +29,7 @@ function cloneToGroup2(item)
 <template>
     <div class="container">
         <div class="column">
-            <DraggableElement :enabled=true name="1" :clone="cloneToGroup1"  class="group-1-dragable" item-key="id" v-model="group1.items">
+            <DraggableElement  :clone="cloneToGroup1"  class="group-1-dragable" item-key="id" v-model="group1.items">
                 <template draggable="true"  #item="{item}">
                     <div class="drag-item">
                         <p>{{ item.name }}</p>
@@ -39,7 +39,7 @@ function cloneToGroup2(item)
         </div>
         <div class="column">
 
-            <DraggableElement :enabled=true name="1" :clone="cloneToGroup2" class="group-1-dragable" item-key="id" v-model="group2.items">
+            <DraggableElement :clone="cloneToGroup2" class="group-2-dragable" item-key="id" v-model="group2.items">
                 <template draggable="true"  #item="{item}">
                     <div class="drag-item">
                         <p>{{ item.name }}</p>
@@ -50,28 +50,17 @@ function cloneToGroup2(item)
     </div>
 </template>
 <style lang="scss" scoped>
-    .sdcv-dragging
-    {
-        .drag-item
-        {
-            
-        }
-    }
-    .sdcv-moving
-    {
-        .drag-item
-        {
-            background-color: rgb(182, 182, 182);
-        }
-    }
     .container
     {
         display: flex;
+        
     }
     .column
     {
         flex:6;
-        padding: 10px;
+        margin: 10px;
+        border-radius: 10px;
+        overflow: hidden;
         
     }
     .group-1-dragable
@@ -84,5 +73,5 @@ function cloneToGroup2(item)
         display: flex;
         flex-direction: column;
     }
-
+    
 </style>
