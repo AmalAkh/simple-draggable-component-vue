@@ -30,7 +30,7 @@ function cloneToGroup2(item)
     <div class="container">
         <div class="column">
             <DraggableElement  :clone="cloneToGroup1"  class="group-1-dragable" item-key="id" v-model="group1.items">
-                <template draggable="true"  #item="{item}">
+                <template   #item="{item}">
                     <div class="drag-item">
                         <p>{{ item.name }}</p>
                     </div>
@@ -40,7 +40,7 @@ function cloneToGroup2(item)
         <div class="column">
 
             <DraggableElement :clone="cloneToGroup2" class="group-2-dragable" item-key="id" v-model="group2.items">
-                <template draggable="true"  #item="{item}">
+                <template   #item="{item}">
                     <div class="drag-item">
                         <p>{{ item.name }}</p>
                     </div>
