@@ -54,7 +54,7 @@ export default
         
         dragStart(index)
         {
-            console.log("started");
+           
             this.dragEnded = false;
             this.draggingItemIndex=index
             this.draggingItemKey = this.activeItems[index][this.itemKey];
@@ -62,14 +62,17 @@ export default
             window.draggableElementDraggingObject = this.activeItems[index];
             window.draggableElementGroup = this.group;
             window.draggingElementInitalElementId = this.elId
-            this.$emit("movestart",this.activeItems[index],index);
-       
-            this.updateShadowItems();
             
+            this.updateShadowItems();
+            this.$emit("movestart",index,this.activeItems[index]);
+       
             
         },
         dragEnd()
         {
+            let index = this.draggingItemIndex;
+          
+            
             this.draggingItemIndex=-1
             this.draggingItemKey = "";
             this.dragEnded = true;
@@ -81,11 +84,12 @@ export default
             window.draggingElementInitalElementId = "";
             this.isAdded = false;
             this.isInnerMutation = false;
+       
             
             
-            this.$emit("moveend");
             this.updateShadowItems();
-            console.log("dagend");
+           
+            
 
             
         },
@@ -96,7 +100,7 @@ export default
             if(index != this.draggingItemIndex && this.draggingItemIndex != -1 && (!this.transitioning && !this.blocked) && this.enabled )
             {
                 
-                //this.updateShadowItems();
+                
                 
                 this.blocked = true;
                 let cont = this.activeItems[index];
@@ -104,6 +108,8 @@ export default
               
                 this.activeItems[index] = cont2;
                 this.activeItems[this.draggingItemIndex] = cont;
+                
+                
                 this.shadowActiveItems[index] = {isActive:true};
                 this.shadowActiveItems[this.draggingItemIndex] = {isActive:false}
                 
@@ -111,10 +117,7 @@ export default
                 this.$emit("moved",this.draggingItemIndex, index, this.activeItems[this.draggingItemIndex])
                 this.draggingItemIndex = index;
 
-                setTimeout(()=>
-                {
-                    this.blocked = false;
-                },50)
+             
                 this.isInnerMutation = true;
 
                 this.$emit("update:modelValue", this.activeItems);
@@ -174,19 +177,16 @@ export default
 
         
                     this.$emit("update:modelValue", this.activeItems);
-                    EventBus.emit("cloned", this.elId);
+                    EventBus.emit("cloned",this.elId);
+                    this.$emit("cloned",index, this.activeItems);
+
                     this.shadowActiveItems = newShadowItems;
                     this.shadowActiveItems[index].isActive = true;
                     
                     this.isAdded = true;
                     this.dragEnded = false;
 
-                    setTimeout(()=>
-                    {
-                        this.blocked = false;
-                        console.log("changed")
-                    },90)
-                    
+                   
                     
                 }
             }
@@ -197,11 +197,13 @@ export default
         drop()
         {
             this.updateShadowItems();
+            this.$emit("moveend", this.draggingItemIndex,this.activeItems[this.draggingItemIndex]);
             
             this.draggingItemIndex = -1;
             this.draggingItemKey = "";
             this.isAdded = false;
             this.blocked = false;      
+      
             
 
           
@@ -215,7 +217,20 @@ export default
             {
                 this.shadowActiveItems.push({isActive:false});
             }
+        },
+        transitionEnd()
+        {
+            this.transitioning=false;
+            this.blocked = false;
+         
+        },
+        transitionCancel()
+        {
+            this.transitioning=false;
+      
+            
         }
+
         
     },
     mounted()
@@ -228,7 +243,7 @@ export default
         {
             if(elId != this.elId)
             {
-        
+                
                 this.updateShadowItems();
                 this.draggingItemIndex = -1;
                 this.draggingItemKey = "";
@@ -247,7 +262,7 @@ export default
            handler()
            {
                 this.activeItems = this.modelValue;
-                console.log(`hanlder`)
+          
                 if(!this.isInnerMutation)
                 {
                     
@@ -270,7 +285,7 @@ export default
 <template>
     <transition-group :tag="tag"  :name="name" :class="{'disabled':!enabled}">
       
-      <div   v-for="(item,index) in shadowActiveItems" :draggable="enabled"  :key="activeItems[index][itemKey]" :class="{'sdcv-dragging':draggingItemKey==activeItems[index][itemKey], 'sdcv-moving':item.isActive }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitioning=false" @transitioncancel="transitioning=false"   @dragleave.prevent.stop="" @drop="drop"  >
+      <div style="cursor: grab;"   v-for="(item,index) in shadowActiveItems" :draggable="enabled"  :key="activeItems[index][itemKey]" :class="{'sdcv-dragging':draggingItemKey==activeItems[index][itemKey], 'sdcv-moving':item.isActive }" @dragstart="dragStart(index)" @dragend="dragEnd" @dragover.prevent="changePosition(index)" @transitionrun="transitioning=true" @transitionstart="transitioning=true"  @transitionend="transitionEnd" @transitioncancel="transitionCancel"   @dragleave.prevent.stop="" @drop="drop"  >
           <slot name="item" :item="activeItems[index]" >
               
           </slot>
@@ -280,6 +295,15 @@ export default
     
 </template>
 <style lang="scss" scoped>
+    .sdcv-moving
+    {
+        cursor: grabbing !important;
+    }
+    .sdcv-dragging
+    {
+        cursor: grabbing !important;
+
+    }
     .disabled:hover
     {
         cursor:not-allowed;
