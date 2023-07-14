@@ -35,11 +35,6 @@ export default
             type:String,
             default:"div"
         },
-        name:
-        {
-            type:String,
-            required:true
-        },
         enabled:
         {
             type:Boolean, 
@@ -110,10 +105,9 @@ export default
                 this.$emit("moved",this.draggingItemIndex, index, this.activeItems[this.draggingItemIndex])
                 this.draggingItemIndex = index;
 
-                setTimeout(()=>
-                {
-                    this.blocked = false;
-                },50)
+              
+                this.blocked = false;
+               
                 this.isInnerMutation = true;
 
                 this.$emit("update:modelValue", this.activeItems);
@@ -175,11 +169,9 @@ export default
                     this.isAdded = true;
                     this.dragEnded = false;
 
-                    setTimeout(()=>
-                    {
-                        this.blocked = false;
+                    this.blocked = false;
                     
-                    },90)
+                 
                     
                     
                 }
