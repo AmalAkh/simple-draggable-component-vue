@@ -60,9 +60,10 @@ export default
             
          
             
-            this.$emit("movestart",this.activeItems[index],index);
-           
+            
             this.updateShadowItems();
+            this.$emit("movestart",index,this.activeItems[index]);
+
 
             
         },
@@ -81,7 +82,7 @@ export default
             this.updateShadowItems();
             
             
-            this.$emit("moveend");
+            
             
         },
         changePosition(index)
@@ -102,10 +103,11 @@ export default
                 this.shadowActiveItems[index] = {isActive:true};
                 this.shadowActiveItems[this.draggingItemIndex] = {isActive:false}
                 
+                
                 this.$emit("moved",this.draggingItemIndex, index, this.activeItems[this.draggingItemIndex])
+              
                 this.draggingItemIndex = index;
 
-              
                 this.blocked = false;
                
                 this.isInnerMutation = true;
@@ -163,6 +165,8 @@ export default
 
                     this.$emit("update:modelValue", this.activeItems);
                     EventBus.emit("cloned", this.elId);
+                    this.$emit("cloned",index, this.activeItems[index]);
+                    
                     this.shadowActiveItems = newShadowItems;
                     this.shadowActiveItems[index].isActive = true;
                     
@@ -183,6 +187,8 @@ export default
         drop()
         {
             this.updateShadowItems();
+            this.$emit("moveend", this.draggingItemIndex,this.activeItems[this.draggingItemIndex]);
+
             this.draggingItemIndex = -1;
             this.draggingItemKey = "";
             this.isAdded = false;

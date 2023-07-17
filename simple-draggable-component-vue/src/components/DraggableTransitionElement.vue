@@ -114,9 +114,9 @@ export default
                 this.shadowActiveItems[this.draggingItemIndex] = {isActive:false}
                 
                 
+                
                 this.$emit("moved",this.draggingItemIndex, index, this.activeItems[this.draggingItemIndex])
                 this.draggingItemIndex = index;
-
              
                 this.isInnerMutation = true;
 
@@ -178,7 +178,7 @@ export default
         
                     this.$emit("update:modelValue", this.activeItems);
                     EventBus.emit("cloned",this.elId);
-                    this.$emit("cloned",index, this.activeItems);
+                    this.$emit("cloned",index, this.activeItems[index]);
 
                     this.shadowActiveItems = newShadowItems;
                     this.shadowActiveItems[index].isActive = true;
