@@ -84,6 +84,22 @@ default:function(item)
 Function for clonning an element. Have to return an object.
 <br><br><br>
 
+**tag** <br>
+type: String <br>
+required: false<br>
+default:"div"
+<br><br>
+Tag name for wrapping items
+<br><br><br>
+
+**group** <br>
+type: String <br>
+required: false<br>
+default:undefined
+<br><br>
+Group name. When two draggable elements have different names, you can't clone items from one to another.
+<br><br><br>
+
 
 
 
