@@ -95,10 +95,22 @@ Tag name for wrapping items
 **group** <br>
 type: String <br>
 required: false<br>
-default:undefined
+default:null
 <br><br>
 Group name. When two draggable elements have different names, you can't clone items from one to another.
 <br><br><br>
+
+**modelValue** <br>
+type: Array <br>
+required: false<br>
+default:null
+<br><br>
+Array of the items
+<br><br><br>
+
+
+
+
 
 
 
