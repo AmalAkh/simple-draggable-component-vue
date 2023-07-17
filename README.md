@@ -73,6 +73,17 @@ default:true
 Determine if it is possible to put an element here
 <br><br><br>
 
+**clone** <br>
+type: Function <br>
+required: false<br>
+default:function(item)
+{
+   return item;
+}
+<br><br>
+Function for clonning an element. Have to return an object.
+<br><br><br>
+
 
 
 
