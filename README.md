@@ -2,7 +2,7 @@
  Simple draggable component for VueJS 3.x
 
  ## Demo
- [Demo](https://amalakh.github.io/vue-draggable-demo)
+ [Demo](https:/amalakhgithubiosimple-draggable-component-vue-demo/)
 
 ## Installation
 
@@ -183,7 +183,20 @@ item - current item <br>
 
 <br><br><br>
 
-
+### CSS customization
+<br><br>
+You can customize appearance of the dragging elements by these two classes
+<br><br>
+```
+    .sdcv-dragging
+    {
+        //for element which is moved by cursor;
+    }
+    .sdcv-moving
+    {
+        //for element that is in the element;
+    }
+```
 
 
 
