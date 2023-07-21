@@ -2,8 +2,7 @@
  Simple draggable component for VueJS 3.x
 
  ## Demo
- [Demo](https:/amalakhgithubiosimple-draggable-component-vue-demo/)
-
+ [Demo](https://amalakh.github.io/simple-draggable-component-vue-demo/)
 ## Installation
 
 ```
