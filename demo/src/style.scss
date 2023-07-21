@@ -8,6 +8,30 @@
   p
   {
     margin-bottom: 0px;
+    font-size: 130%;
   }
 }
+
+.sdcv-moving
+{
+  .drag-item
+  {
+    background-color: rgb(182, 182, 182);
+  }
+}
+.list-move, /* apply transition to moving elements */
+    .list-enter-active,
+    .list-leave-active {
+        transition: all 0.25s;
+    }
+
+    .list-enter-from,
+    .list-leave-to {
+        opacity: 0;
+        transform: scale(0);
+        
+    }
+
+
+
 
